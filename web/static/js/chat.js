@@ -50,6 +50,7 @@ function get_messages(user_from, user_to){
 function send_messages(user_from, user_to){
     $('#sending').empty();
     $.getJSON("/messages", function(data){
-
+        let div = <div>Content</div>
+        
     });
 }*/
