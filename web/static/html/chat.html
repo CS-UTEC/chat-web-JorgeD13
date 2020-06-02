@@ -8,24 +8,42 @@
     <script src="/static/js/chat.js" ></script>
     <title>Chat</title>
 </head>
-<body>
-    <table width="100%" ,border="1px">
-        <tr>
-        <td width="30%">
-            <div id="current">
-            <label id="current_username"></label>
-                <button type="button" class="btn btn-primary" onclick="get_all_users()" >Get all users</button>
-            </div>
-            <div id="users"></div>
-        </td>
-        <td width="30%">
-            <div id="current">
-            <label id="current_username"></label>
-                <button type="button" class="btn btn-primary" onclick="get_current()" >Get user</button>
-            </div>
-            <div id="users"></div>
-        </td>
-    </tr>
+<body onload="get_current()">
+    <style media="screen">
+        #Contacts {
+            height: 500px;
+            border: 5px solid #4050df;
+            width: 30%;
+        }
+        #messages {
+            height: 500px;
+            border: 5px solid #11b12c;
+            width: 100%;
+        }
+        </style>
+    <table width="80%" ,border="20px">
+        <tr width="40%">
+            <td width="50%">
+                <div id="Contacts">
+                <div onload="get_current()">Contacts</div>
+                </div>
+            </td>
+            <td width="100%">
+                <div id="messages"></div>
+            </td>
+        </tr>
+        <tr width="20%">
+            <td width="%50">
+            </td>
+            <td width="50%">
+                <div id="cb">
+                    <form name="message" action="">
+                        <input name="usermsg" type="text" id="usermsg" size="63" />
+                        <input text="submitmsg" type="submit"  id="submitmsg" value="Send" />
+                    </form>
+                </div>
+            </td>
+        </tr>
 </table>
 </body>
 </html>

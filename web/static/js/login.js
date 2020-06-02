@@ -11,7 +11,7 @@ function login(){
             contentType: 'application/json',
             success: function(data){
                 console.log("Authenticated!");
-                alert("Authenticated!!!");
+                alert("YASTAS PRRO!!!");
             },
             data: JSON.stringify(credentials)
         });

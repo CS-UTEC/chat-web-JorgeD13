@@ -45,7 +45,8 @@ $(function(){
             allowEditing: true
         }, {
             dataField: "sent_on",
-            dataType: "date"
+            dataType: "date",
+            format: "MM/dd/yyyy hh:mm"
         }, {
             dataField: "user_from_id",
             allowEditing: true,

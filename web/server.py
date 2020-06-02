@@ -23,11 +23,17 @@ def index():
 
 @app.route('/authenticate', methods = ['POST'])
 def authenticate():
+    db_session = db.getSession(engine)
     msg = json.loads(request.data)
+    username = msg['username']
+    password = msg['password']
+    res = db_session.query(entities.User).filter(entities.User.username == username).filter(entities.User.password == password)
     #dummy validation
-    if str(msg['username']) == str(msg['password']):
+    user = res[:]
+    if len(user):
         r_msg = {'msg' : 'Welcome!'}
-        json_msg = json.dumps(r_msg)
+        session['user'] = json.dumps(user[0], cls = connector.AlchemyEncoder)
+        json_msg  = json.dumps(r_msg)
         return Response(json_msg, status=200, mimetype="application/json")
     r_msg = {'msg' : 'Ops!'}
     json_msg = json.dumps(r_msg)
@@ -99,10 +105,8 @@ def delete_user():
 
 @app.route('/current', methods = ['GET'])
 def current_user():
-    db_session = db.getSession(engine)
-    user = db_session.query(entities.User).filter(entities.User.id == session['logged_user']).first()
-    return Response(json.dumps(user, cls = connector.AlchemyEncoder), mimetype = 'application/json')
-
+    user_json = session['user']
+    return Response(user_json, status=200, mimetype='application/json')
 
 
 @app.route('/messages', methods = ['POST'])
@@ -110,7 +114,6 @@ def create_message():
     c = json.loads(request.form['values'])
     message = entities.Message(
         content = c['content'],
-        sent_on=datetime.datetime(2000,2,2),
         user_from_id = c['user_from_id'],
         user_to_id = c['user_to_id']
     )
@@ -140,6 +143,30 @@ def get_messages():
     data = dbResponse[:]
     return Response(json.dumps(data, cls=connector.AlchemyEncoder), mimetype='application/json')
 
+@app.route('/messages/<user_from>/<user_to>', methods = ['GET'])
+def get_users_messages(user_from, user_to):
+    session = db.getSession(engine)
+    dbResponse = session.query(entities.Message).filter(entities.Message.user_from_id == user_from).filter(entities.Message.user_to_id == user_to)
+    data = dbResponse[:]
+    return Response(json.dumps(data, cls=connector.AlchemyEncoder), mimetype='application/json')
+
+@app.route('/send_message/<user_from>/<user_to>', methods = ['POST'])
+def send_message(user_from, user_to):
+    session = db.getSession(engine)
+    message = json.loads(request.data)
+    content = message['content']
+    user_from_id = user_from
+    user_to_id = user_to
+    add = entities.Message(
+        content=content,
+        user_from_id=user_from_id,
+        user_to_id=user_to_id
+    )
+    session.add(add)
+    session.commit()
+    return "sent"
+
+
 
 @app.route('/messages', methods = ['PUT'])
 def update_message():
@@ -164,6 +191,7 @@ def delete_message():
     session.delete(message)
     session.commit()
     return "Your message was deleted"
+
 
 
 if __name__ == '__main__':

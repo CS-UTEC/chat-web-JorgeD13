@@ -39,7 +39,7 @@ $(function(){
         columns: [{
             dataField: "id",
             dataType: "number",
-            allowEditing: false
+            allowEditing: true
         }, {
             dataField: "username"
         }, {
